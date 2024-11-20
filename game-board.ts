@@ -37,6 +37,13 @@ export abstract class GamePiece {
   }
 }
 
+/**
+ * Generic grid-based square game board, which will populate any pieces provided in the constructor,
+ * filling any unoccupied spaces with null.
+ * 
+ * This maintains the state of the game as it runs and has methods to get and move pieces on the board.
+ * 
+ */
 export class GameBoard {
 
   boardState: (GamePiece | null)[][];
@@ -55,6 +62,11 @@ export class GameBoard {
     });
   }
 
+  /**
+   * Returns a piece on the baord by its id, or undefined if there isn't one
+   * @param pieceId 
+   * @returns 
+   */
   getPieceById(pieceId: string): GamePiece | undefined {
     const foundPiece = this.boardState.flat().find(pieceOrNull => {
       return pieceOrNull !== null && (pieceOrNull as GamePiece).id === pieceId;
@@ -63,12 +75,22 @@ export class GameBoard {
     return (foundPiece as GamePiece) || undefined;
   }
 
+  /**
+   * Returns a piece on the board by it's row and column, or undefined if there isn't one.
+   * @param position 
+   * @returns 
+   */
   getPieceByPosition(position: Position): GamePiece | undefined {
     const [row, column] = position;
     const piece = this.boardState[row][column];
     return piece || undefined;
   }
 
+  /**
+   * Adds a piece to the board, at a specific row and column
+   * @param piece 
+   * @param position 
+   */
   addPiece(piece: GamePiece, position: Position): void {
     const [toRow, toColumn] = position;
     this.boardState[toRow][toColumn] = piece;
@@ -76,6 +98,14 @@ export class GameBoard {
     piece.column = toColumn;
   }
 
+  /**
+   * Moves a pice by its id to the specified position.
+   * 
+   * Throws an error if there is no such piece, or the requeste position is an invalid move
+   * for that particular piece
+   * @param pieceId 
+   * @param position 
+   */
   movePiece(pieceId: string, position: Position) {
     const [toRow, toColumn] = position;
     const piece = this.getPieceById(pieceId);

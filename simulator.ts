@@ -20,6 +20,9 @@ export type RookMoveData = {
   numberOfSpaces: number;
 }
 
+/**
+ * Main business logic for the rook-vs-bishop specific busines logic.
+ */
 export class Simulator {
 
   rook: Rook;
@@ -36,6 +39,12 @@ export class Simulator {
     this.numberOfTurns = 0;
   }
 
+  /**
+   * Main method that runs the simulation, by randomly movinmg the rook and evaluating if there's a winner
+   * based on the arguments provided to the constructor for instantiation up to the maximumTurns amount of iterations
+   * 
+   * @returns results of the simulation, including who won and how many turns it took
+   */
   simulate(): SimResult {
     this.logBoardState();
 
@@ -59,6 +68,9 @@ export class Simulator {
     return { winner, numberOfTurns: this.numberOfTurns };
   }
 
+  /**
+   * Moves the rook randomly and logs the result
+   */
   moveRook(): void {
     const moveData = this.calculateMoveData();
     const { direction: moveDirection, numberOfSpaces: spacesToMove } = moveData;
@@ -86,12 +98,22 @@ export class Simulator {
     this.logRookMovement([currentRow, currentColumn], [newRow, newColumn], moveData);
   }
 
+  /**
+   * Determines how the rook should randomly move. Currently based on a coin flip and rolling dice.
+   * 
+   * @returns which direction and how many spaces
+   */
   calculateMoveData(): RookMoveData {
     const direction = this.flipCoin() === 0 ? Direction.RIGHT : Direction.UP;
     const numberOfSpaces = this.rollDie() + this.rollDie();
     return { direction, numberOfSpaces };
   }
 
+  /**
+   * Evaluates both the rook and bishop to see if either piece can capture the other.
+   *  
+   * @returns the winner if there is one, or undefined if there isn't.
+   */
   determineWinner(): GamePiece | undefined {
     let winner: GamePiece | undefined = undefined;
     const rookCanCaptureBishop = this.rook.isValidMove([this.bishop.row, this.bishop.column]);
@@ -107,6 +129,12 @@ export class Simulator {
     return winner;
   }
 
+  /**
+   * Writes movemet of the rook to stdout, including where it came from and where it's going.
+   * @param oldPosition 
+   * @param newPosition 
+   * @param moveData 
+   */
   logRookMovement(oldPosition: Position, newPosition: Position, moveData: RookMoveData): void {
     const oldPositionStr = this.positionAsRankAndFile(oldPosition);
     const newPositionStr = this.positionAsRankAndFile(newPosition);
@@ -114,19 +142,36 @@ export class Simulator {
     console.log(msg);
   }
 
+  /**
+   * Prints the entire formated board state to stdout
+   */
   logBoardState(): void {
     console.log(`Board after ${this.numberOfTurns} turns\n${this.gameBoard}\n\n`);
   }
 
+  /**
+   * Returns a string representing the chess-specific rank-and-file notation
+   * for a piece given its position by row-and-column
+   * @param position 
+   * @returns the chess-specific rank-and-file notation
+   */
   positionAsRankAndFile(position: Position): string {
     const [row, column] = position;
     return `${CHESS_FILES[column]}${CHESS_RANKS[row]}`;
   }
 
+  /**
+   * Returns random result between 0 and 1
+   * @returns 
+   */
   flipCoin(): number {
     return randBetweenInclusive(0, 1);
   }
 
+  /**
+   * Returns random result between 1 and 6, for standard 6-sided die.
+   * @returns 
+   */
   rollDie(): number {
     return randBetweenInclusive(1, 6);
   }
