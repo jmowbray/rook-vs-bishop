@@ -1,0 +1,16 @@
+{
+  "name": "rook-vs-bishop",
+  "version": "1.0.0",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.9.1",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "sim": "yarn build && node dist/index.js",
+    "test": "jest"
+  }
+}
